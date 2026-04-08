@@ -110,7 +110,7 @@ Kanban_Board/
 ### 1. Clone and install
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/atharvmali/Kanban_Board.git
 cd Kanban_Board/backend
 npm install
 ```
