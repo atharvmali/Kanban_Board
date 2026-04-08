@@ -3,6 +3,7 @@ const crypto = require("crypto");
 const User = require("../models/User");
 const sendEmail = require("../utils/sendEmail");
 const sendWelcomeEmail = require("../utils/sendWelcomeEmail");
+const { getResetPasswordEmailTemplate } = require("../utils/emailTemplates");
 
 const createToken = (userId) => {
   return jwt.sign({ userId }, process.env.JWT_SECRET, {
@@ -129,7 +130,10 @@ const forgotPassword = async (req, res, next) => {
       const resetUrl = `${baseUrl}/reset-password.html?token=${resetToken}`;
 
       const text = `You requested a password reset. Use this link: ${resetUrl}. This link expires in 15 minutes.`;
-      const html = `<p>You requested a password reset.</p><p><a href="${resetUrl}">Reset Password</a></p><p>This link expires in 15 minutes.</p>`;
+      const html = getResetPasswordEmailTemplate({
+        userName: user.name,
+        resetUrl
+      });
 
       try {
         await sendEmail({
