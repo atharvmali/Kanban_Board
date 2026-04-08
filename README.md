@@ -45,50 +45,60 @@ The project is beginner-friendly to read and run, while using production-aware p
 
 ```text
 Kanban_Board/
-  backend/
-    config/
-      db.js
-    controllers/
-      authController.js
-      boardController.js
-      columnController.js
-      taskController.js
-    middleware/
-      authMiddleware.js
-      errorHandler.js
-    models/
-      Board.js
-      Column.js
-      Task.js
-      User.js
-    routes/
-      authRoutes.js
-      boardRoutes.js
-      columnRoutes.js
-      taskRoutes.js
-    seed/
-      sampleData.js
-      migrateAssignUser.js
-    utils/
-      sendEmail.js
-      sendWelcomeEmail.js
-      emailTemplates.js
-    .env.example
-    package.json
-    server.js
-  frontend/
-    index.html
-    login.html
-    signup.html
-    forgot-password.html
-    reset-password.html
-    script.js
-    auth.js
-    password-reset.js
-    styles.css
-    auth.css
-  .gitignore
-  README.md
+│
+├── backend/
+│   ├── config/
+│   │   └── db.js
+│   │
+│   ├── controllers/
+│   │   ├── authController.js
+│   │   ├── boardController.js
+│   │   ├── columnController.js
+│   │   └── taskController.js
+│   │
+│   ├── middleware/
+│   │   ├── authMiddleware.js
+│   │   └── errorHandler.js
+│   │
+│   ├── models/
+│   │   ├── Board.js
+│   │   ├── Column.js
+│   │   ├── Task.js
+│   │   └── User.js
+│   │
+│   ├── routes/
+│   │   ├── authRoutes.js
+│   │   ├── boardRoutes.js
+│   │   ├── columnRoutes.js
+│   │   └── taskRoutes.js
+│   │
+│   ├── seed/
+│   │   ├── sampleData.js
+│   │   └── migrateAssignUser.js
+│   │
+│   ├── utils/
+│   │   ├── sendEmail.js
+│   │   ├── sendWelcomeEmail.js
+│   │   └── emailTemplates.js
+│   │
+│   ├── .env.example
+│   ├── package.json
+│   └── server.js
+│
+├── frontend/
+│   ├── index.html
+│   ├── login.html
+│   ├── signup.html
+│   ├── forgot-password.html
+│   ├── reset-password.html
+│   ├── script.js
+│   ├── auth.js
+│   ├── password-reset.js
+│   ├── styles.css
+│   └── auth.css
+│
+├── .gitignore
+└── README.md
 ```
 
 ## Setup Instructions
