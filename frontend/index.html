@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kanban Board</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <h1>Kanban Board</h1>
+          <p>Plan work visually, move tasks with drag-and-drop.</p>
+        </div>
+        <div class="board-controls">
+          <select id="boardSelect"></select>
+          <button id="addBoardBtn">+ Board</button>
+          <button id="renameBoardBtn" class="secondary">Rename</button>
+          <button id="deleteBoardBtn" class="danger">Delete</button>
+        </div>
+      </header>
+
+      <section class="toolbar">
+        <button id="addColumnBtn">+ Add Column</button>
+        <span id="statusText">Loading...</span>
+      </section>
+
+      <main>
+        <div id="columnsContainer" class="columns"></div>
+      </main>
+    </div>
+
+    <template id="columnTemplate">
+      <article class="column" draggable="false">
+        <header class="column-header">
+          <h2></h2>
+          <div class="column-actions">
+            <button class="small edit-column">Edit</button>
+            <button class="small danger delete-column">Delete</button>
+          </div>
+        </header>
+        <div class="task-list"></div>
+        <button class="add-task-btn">+ Add Task</button>
+      </article>
+    </template>
+
+    <template id="taskTemplate">
+      <div class="task" draggable="true">
+        <h3></h3>
+        <p class="task-description"></p>
+        <p class="task-date"></p>
+        <div class="task-actions">
+          <button class="small edit-task">Edit</button>
+          <button class="small danger delete-task">Delete</button>
+        </div>
+      </div>
+    </template>
+
+    <script src="script.js"></script>
+  </body>
+</html>
