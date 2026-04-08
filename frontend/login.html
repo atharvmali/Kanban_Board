@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login | Kanban Board</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="auth.css" />
+  </head>
+  <body>
+    <main class="auth-shell">
+      <form id="loginForm" class="auth-card">
+        <h1>Welcome Back</h1>
+        <p>Login to access your personal Kanban workspace.</p>
+
+        <label for="email">Email</label>
+        <input id="email" type="email" required />
+
+        <label for="password">Password</label>
+        <input id="password" type="password" minlength="6" required />
+
+        <button type="submit">Login</button>
+        <p id="message" class="message"></p>
+        <p class="switch-link">No account? <a href="signup.html">Create one</a></p>
+      </form>
+    </main>
+
+    <script src="auth.js"></script>
+  </body>
+</html>
