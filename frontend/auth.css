@@ -84,6 +84,13 @@ button:hover {
   color: #b91c1c;
 }
 
+.hint {
+  margin-top: 0.6rem;
+  margin-bottom: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
 .switch-link {
   margin-top: 0.7rem;
 }
