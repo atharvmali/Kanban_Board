@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const User = require("../models/User");
 const sendEmail = require("../utils/sendEmail");
+const sendWelcomeEmail = require("../utils/sendWelcomeEmail");
 
 const createToken = (userId) => {
   return jwt.sign({ userId }, process.env.JWT_SECRET, {
@@ -53,6 +54,13 @@ const register = async (req, res, next) => {
         name: user.name,
         email: user.email
       }
+    });
+
+    // Fire-and-forget welcome email so registration response is never blocked.
+    setImmediate(() => {
+      sendWelcomeEmail(user.email, user.name).catch((emailError) => {
+        console.error("Welcome email failed:", emailError.message);
+      });
     });
   } catch (error) {
     next(error);
