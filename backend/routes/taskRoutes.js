@@ -6,8 +6,11 @@ const {
   deleteTask,
   moveTask
 } = require("../controllers/taskController");
+const { protect } = require("../middleware/authMiddleware");
 
 const router = express.Router();
+
+router.use(protect);
 
 router.route("/columns/:columnId/tasks").get(getTasksByColumn).post(createTask);
 router.route("/tasks/:id").put(updateTask).delete(deleteTask);

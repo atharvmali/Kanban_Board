@@ -55,6 +55,10 @@ body {
   color: var(--muted);
 }
 
+#welcomeText {
+  max-width: 44ch;
+}
+
 .board-controls {
   display: flex;
   flex-wrap: wrap;

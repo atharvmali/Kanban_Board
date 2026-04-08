@@ -1,11 +1,16 @@
-const API_BASE_URL = "http://localhost:5050/api";
+const API_BASE_URL =
+  window.location.protocol === "file:" ? "http://localhost:5050/api" : `${window.location.origin}/api`;
+const TOKEN_KEY = "kanban_token";
+const USER_KEY = "kanban_user";
 
 const boardSelect = document.getElementById("boardSelect");
 const addBoardBtn = document.getElementById("addBoardBtn");
 const renameBoardBtn = document.getElementById("renameBoardBtn");
 const deleteBoardBtn = document.getElementById("deleteBoardBtn");
+const logoutBtn = document.getElementById("logoutBtn");
 const addColumnBtn = document.getElementById("addColumnBtn");
 const statusText = document.getElementById("statusText");
+const welcomeText = document.getElementById("welcomeText");
 const columnsContainer = document.getElementById("columnsContainer");
 
 const columnTemplate = document.getElementById("columnTemplate");
@@ -15,13 +20,23 @@ let boards = [];
 let activeBoardId = null;
 
 async function request(path, options = {}) {
+  const token = localStorage.getItem(TOKEN_KEY);
+
   const response = await fetch(`${API_BASE_URL}${path}`, {
     headers: {
       "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...(options.headers || {})
     },
     ...options
   });
+
+  if (response.status === 401) {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
+    window.location.href = "login.html";
+    throw new Error("Session expired. Please login again.");
+  }
 
   if (!response.ok) {
     let message = "Request failed";
@@ -81,9 +96,14 @@ async function loadBoards() {
     boards = await request("/boards");
   }
 
-  activeBoardId = boards[0]._id;
+  activeBoardId = boards.length ? boards[0]._id : null;
   renderBoardSelect();
-  await loadActiveBoard();
+  if (activeBoardId) {
+    await loadActiveBoard();
+  } else {
+    renderColumns([]);
+    setStatus("Create your first board to get started.");
+  }
 }
 
 function renderBoardSelect() {
@@ -98,6 +118,17 @@ function renderBoardSelect() {
     }
     boardSelect.appendChild(option);
   });
+}
+
+function renderWelcome() {
+  try {
+    const userData = JSON.parse(localStorage.getItem(USER_KEY) || "{}");
+    if (userData.name) {
+      welcomeText.textContent = `Welcome, ${userData.name}. Your boards are private to your account.`;
+    }
+  } catch (error) {
+    welcomeText.textContent = "Plan work visually, move tasks with drag-and-drop.";
+  }
 }
 
 async function loadActiveBoard() {
@@ -344,6 +375,11 @@ function registerEvents() {
   renameBoardBtn.addEventListener("click", () => handleAction(renameBoard));
   deleteBoardBtn.addEventListener("click", () => handleAction(deleteBoard));
   addColumnBtn.addEventListener("click", () => handleAction(addColumn));
+  logoutBtn.addEventListener("click", () => {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
+    window.location.href = "login.html";
+  });
 }
 
 async function handleAction(action) {
@@ -356,6 +392,13 @@ async function handleAction(action) {
 }
 
 (async function init() {
+  const token = localStorage.getItem(TOKEN_KEY);
+  if (!token) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  renderWelcome();
   registerEvents();
   try {
     await loadBoards();

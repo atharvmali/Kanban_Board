@@ -1,12 +1,8 @@
-# Kanban Board (Full Stack)
+# Kanban Board (Auth + Multi-User)
 
-A beginner-friendly, production-aware Kanban Board application with:
+This project upgrades the existing single-user Kanban app into a multi-user application with JWT authentication and strict per-user data isolation.
 
-- Frontend: HTML, CSS, Vanilla JavaScript
-- Backend: Node.js, Express.js, MongoDB, Mongoose
-- Features: Multiple boards, custom columns, task CRUD, drag-and-drop task movement, persistent MongoDB storage
-
-## Project Structure
+## Updated Folder Structure
 
 ```text
 Kanban_Board/
@@ -14,111 +10,225 @@ Kanban_Board/
     config/
       db.js
     controllers/
-      boardController.js
-      columnController.js
-      taskController.js
+      authController.js                 # NEW
+      boardController.js                # UPDATED
+      columnController.js               # UPDATED
+      taskController.js                 # UPDATED
     middleware/
+      authMiddleware.js                 # NEW
       errorHandler.js
     models/
-      Board.js
-      Column.js
-      Task.js
+      User.js                           # NEW
+      Board.js                          # UPDATED
+      Column.js                         # UPDATED
+      Task.js                           # UPDATED
     routes/
-      boardRoutes.js
-      columnRoutes.js
-      taskRoutes.js
+      authRoutes.js                     # NEW
+      boardRoutes.js                    # UPDATED (protected)
+      columnRoutes.js                   # UPDATED (protected)
+      taskRoutes.js                     # UPDATED (protected)
     seed/
-      sampleData.js
-    .env.example
-    package.json
-    server.js
+      sampleData.js                     # UPDATED
+      migrateAssignUser.js              # NEW (migration helper)
+    .env.example                        # UPDATED
+    package.json                        # UPDATED
+    server.js                           # UPDATED
   frontend/
-    index.html
-    styles.css
-    script.js
+    index.html                          # UPDATED
+    script.js                           # UPDATED
+    styles.css                          # UPDATED
+    login.html                          # NEW
+    signup.html                         # NEW
+    auth.js                             # NEW
+    auth.css                            # NEW
+  .gitignore
   README.md
 ```
 
-## REST API Endpoints
+## Authentication API
 
-### Boards
+### Register
+- `POST /api/auth/register`
+- Body:
 
-- `GET /api/boards` - Get all boards
-- `GET /api/boards/:id` - Get one board with columns and tasks
-- `POST /api/boards` - Create board (`{ "name": "Board Name" }`)
-- `PUT /api/boards/:id` - Update board name
-- `DELETE /api/boards/:id` - Delete board with all related columns/tasks
+```json
+{
+  "name": "Atharv",
+  "email": "atharv@example.com",
+  "password": "password123"
+}
+```
 
-### Columns
+### Login
+- `POST /api/auth/login`
+- Body:
 
-- `GET /api/boards/:boardId/columns` - Get columns in a board
-- `POST /api/boards/:boardId/columns` - Create column (`{ "title": "Todo" }`)
-- `PUT /api/columns/:id` - Update column title
-- `DELETE /api/columns/:id` - Delete column and its tasks
+```json
+{
+  "email": "atharv@example.com",
+  "password": "password123"
+}
+```
 
-### Tasks
+### Current user
+- `GET /api/auth/me`
+- Header: `Authorization: Bearer <JWT_TOKEN>`
 
-- `GET /api/columns/:columnId/tasks` - Get tasks in a column
-- `POST /api/columns/:columnId/tasks` - Create task (`{ "title": "Task", "description": "..." }`)
-- `PUT /api/tasks/:id` - Update task title/description
-- `DELETE /api/tasks/:id` - Delete task
-- `PATCH /api/tasks/:id/move` - Move task (`{ "targetColumnId": "..." }`)
+## Protected Resource Example (JWT)
+
+`GET /api/boards`
+
+```bash
+curl -X GET http://localhost:5050/api/boards \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+## Key Backend Changes
+
+- Added `User` model with hashed password (`bcryptjs`)
+- Added JWT-based auth flow (`jsonwebtoken`)
+- Added `protect` middleware to secure Boards/Columns/Tasks routes
+- Added `userId` to Board, Column, Task schemas
+- Refactored all queries to filter by authenticated user
+- Added token-expiry/invalid-token handling
+
+## Frontend Changes
+
+- Added `login.html` and `signup.html`
+- Added `auth.js` for register/login flow
+- Stores token and user info in `localStorage`
+- Adds `Authorization: Bearer <token>` in API calls
+- Redirects unauthenticated users to login page
+- Added logout button (client-side token removal)
+- Loads only the logged-in user's boards/tasks
 
 ## Setup Instructions
 
-1. Install MongoDB locally (or use MongoDB Atlas).
-2. Open terminal in `Kanban_Board/backend`.
-3. Install dependencies:
+1. Go to backend folder:
+
+```bash
+cd backend
+```
+
+2. Install dependencies:
 
 ```bash
 npm install
 ```
 
-4. Create `.env` from `.env.example`:
+3. Create env file:
 
 ```bash
 cp .env.example .env
 ```
 
-5. Update `MONGODB_URI` inside `.env` if needed.
-6. Seed sample data (optional but recommended):
+4. Update `.env`:
+
+```env
+PORT=5050
+MONGODB_URI=mongodb://127.0.0.1:27017/kanban_board
+JWT_SECRET=replace_with_a_long_random_secret
+JWT_EXPIRES_IN=7d
+```
+
+5. Optional sample seed:
 
 ```bash
 npm run seed
 ```
 
-7. Start backend server:
+- Demo credentials after seed:
+  - Email: `demo@example.com`
+  - Password: `password123`
+
+6. Start backend:
 
 ```bash
 npm run dev
 ```
 
-8. Open app in browser:
+7. Open app:
+- `http://localhost:5050/login.html`
 
-- Option A: Visit `http://localhost:5050` (frontend served by Express)
-- Option B: Open `frontend/index.html` directly (make sure backend is running)
+## Migration Strategy (Single-User -> Multi-User)
 
-## Task Data Model
+### Option A: Fresh start (simplest)
+- Run `npm run seed` to initialize data with a demo user.
 
-Each task stores:
+### Option B: Keep existing data
+- Use migration helper to assign legacy records to one owner account:
 
-- `title`
-- `description`
-- `createdDate`
-- Board/column references for relationship and drag-drop movement
+```bash
+npm run migrate:assign-user
+```
 
-## Notes on Validation and Error Handling
+Optional env vars for migration user:
+- `MIGRATION_USER_EMAIL`
+- `MIGRATION_USER_PASSWORD`
 
-- Mongoose validation for required and length-based fields
-- Centralized Express error middleware (`middleware/errorHandler.js`)
-- Friendly API error responses with proper HTTP status codes
+## Security Practices Included
 
-## Optional Improvements
+- Password hashing with bcrypt
+- JWT verification middleware
+- Route protection for all board/column/task APIs
+- User ownership checks in queries and write operations
+- Basic input validation on frontend and backend
+- Expired/invalid token handling with login redirect
 
-- Add user authentication (JWT)
-- Add task priorities, due dates, labels
-- Add column drag-and-drop ordering
-- Replace `prompt`/`confirm` with custom modal UI
-- Add integration tests with Jest + Supertest
-- Add pagination for large boards
+## Testing Checklist
 
+1. Register two users.
+2. Login as User A and create board/columns/tasks.
+3. Login as User B and confirm User A data is not visible.
+4. Try calling protected APIs without token and confirm 401.
+5. Try invalid token and confirm 401 + frontend redirect.
+6. Drag/drop task between columns for authenticated user.
+
+## Git Workflow
+
+### Create branch
+
+```bash
+git checkout -b feature/auth-multi-user
+```
+
+### Commit logically
+
+```bash
+git add backend/models/User.js backend/controllers/authController.js backend/middleware/authMiddleware.js backend/routes/authRoutes.js backend/server.js backend/package.json backend/.env.example
+
+git commit -m "add user model and JWT auth endpoints"
+
+git add backend/models/Board.js backend/models/Column.js backend/models/Task.js backend/controllers/boardController.js backend/controllers/columnController.js backend/controllers/taskController.js backend/routes/boardRoutes.js backend/routes/columnRoutes.js backend/routes/taskRoutes.js backend/seed/sampleData.js backend/seed/migrateAssignUser.js
+
+git commit -m "scope boards columns tasks to authenticated users"
+
+git add frontend/index.html frontend/script.js frontend/styles.css frontend/login.html frontend/signup.html frontend/auth.js frontend/auth.css README.md
+
+git commit -m "add frontend login signup flow and auth-aware API calls"
+```
+
+### Push branch
+
+```bash
+git push -u origin feature/auth-multi-user
+```
+
+## Sample Pull Request
+
+### Title
+`feat: add JWT auth and multi-user isolation to Kanban app`
+
+### Description
+- Added registration/login using JWT
+- Added User model with hashed passwords
+- Protected Kanban APIs with auth middleware
+- Added user ownership (`userId`) to Board/Column/Task
+- Refactored controllers to prevent cross-user data access
+- Added login/signup UI and logout flow
+- Updated docs and migration strategy for existing data
+
+### Testing Instructions
+- Run backend, register two users, verify isolated data
+- Validate protected endpoints return 401 without/invalid token
+- Validate drag-and-drop still works after authentication

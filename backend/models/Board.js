@@ -9,6 +9,12 @@ const boardSchema = new mongoose.Schema(
       minlength: [2, "Board name must be at least 2 characters"],
       maxlength: [60, "Board name cannot exceed 60 characters"]
     },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true
+    },
     columns: [
       {
         type: mongoose.Schema.Types.ObjectId,
