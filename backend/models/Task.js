@@ -29,6 +29,12 @@ const taskSchema = new mongoose.Schema(
       ref: "Column",
       required: true
     },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true
+    },
     order: {
       type: Number,
       default: 0

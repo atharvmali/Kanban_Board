@@ -3,14 +3,17 @@ const Task = require("../models/Task");
 
 const getTasksByColumn = async (req, res, next) => {
   try {
-    const column = await Column.findById(req.params.columnId);
+    const column = await Column.findOne({ _id: req.params.columnId, userId: req.user._id });
 
     if (!column) {
       res.status(404);
       throw new Error("Column not found");
     }
 
-    const tasks = await Task.find({ column: req.params.columnId }).sort({ order: 1, createdAt: 1 });
+    const tasks = await Task.find({ column: req.params.columnId, userId: req.user._id }).sort({
+      order: 1,
+      createdAt: 1
+    });
     res.json(tasks);
   } catch (error) {
     next(error);
@@ -26,20 +29,21 @@ const createTask = async (req, res, next) => {
       throw new Error("Task title is required");
     }
 
-    const column = await Column.findById(req.params.columnId);
+    const column = await Column.findOne({ _id: req.params.columnId, userId: req.user._id });
 
     if (!column) {
       res.status(404);
       throw new Error("Column not found");
     }
 
-    const taskCount = await Task.countDocuments({ column: column._id });
+    const taskCount = await Task.countDocuments({ column: column._id, userId: req.user._id });
 
     const task = await Task.create({
       title: title.trim(),
       description: description ? description.trim() : "",
       board: column.board,
       column: column._id,
+      userId: req.user._id,
       order: taskCount
     });
 
@@ -67,7 +71,7 @@ const updateTask = async (req, res, next) => {
       updatePayload.description = description.trim();
     }
 
-    const task = await Task.findByIdAndUpdate(req.params.id, updatePayload, {
+    const task = await Task.findOneAndUpdate({ _id: req.params.id, userId: req.user._id }, updatePayload, {
       new: true,
       runValidators: true
     });
@@ -85,14 +89,14 @@ const updateTask = async (req, res, next) => {
 
 const deleteTask = async (req, res, next) => {
   try {
-    const task = await Task.findById(req.params.id);
+    const task = await Task.findOne({ _id: req.params.id, userId: req.user._id });
 
     if (!task) {
       res.status(404);
       throw new Error("Task not found");
     }
 
-    await Task.findByIdAndDelete(task._id);
+    await Task.deleteOne({ _id: task._id, userId: req.user._id });
     res.json({ message: "Task deleted successfully" });
   } catch (error) {
     next(error);
@@ -108,23 +112,24 @@ const moveTask = async (req, res, next) => {
       throw new Error("targetColumnId is required");
     }
 
-    const task = await Task.findById(req.params.id);
+    const task = await Task.findOne({ _id: req.params.id, userId: req.user._id });
 
     if (!task) {
       res.status(404);
       throw new Error("Task not found");
     }
 
-    const targetColumn = await Column.findById(targetColumnId);
+    const targetColumn = await Column.findOne({ _id: targetColumnId, userId: req.user._id });
     if (!targetColumn) {
       res.status(404);
       throw new Error("Target column not found");
     }
 
-    const targetCount = await Task.countDocuments({ column: targetColumn._id });
+    const targetCount = await Task.countDocuments({ column: targetColumn._id, userId: req.user._id });
 
     task.column = targetColumn._id;
     task.board = targetColumn.board;
+    task.userId = req.user._id;
     task.order = targetCount;
 
     await task.save();
