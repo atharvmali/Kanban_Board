@@ -4,6 +4,7 @@ const path = require("path");
 const dotenv = require("dotenv");
 
 const connectDB = require("./config/db");
+const authRoutes = require("./routes/authRoutes");
 const boardRoutes = require("./routes/boardRoutes");
 const columnRoutes = require("./routes/columnRoutes");
 const taskRoutes = require("./routes/taskRoutes");
@@ -21,6 +22,7 @@ app.get("/api/health", (req, res) => {
   res.json({ message: "Kanban API is running" });
 });
 
+app.use("/api/auth", authRoutes);
 app.use("/api/boards", boardRoutes);
 app.use("/api", columnRoutes);
 app.use("/api", taskRoutes);
