@@ -131,6 +131,8 @@ EMAIL_FROM=no-reply@kanban.local
 # SMTP (primary)
 SMTP_HOST=
 SMTP_PORT=587
+SMTP_SERVICE=
+SMTP_SECURE=false
 SMTP_USER=
 SMTP_PASS=
 
@@ -142,6 +144,7 @@ EMAIL_PASS=
 Notes:
 - The project uses `MONGODB_URI` (commonly referred to as `MONGO_URI` in other projects).
 - If SMTP variables are empty, email falls back to development mode and logs payload in server console.
+- In production (for example Render), SMTP must be configured or email requests will fail with a clear config error.
 
 ### 3. Optional seed data
 
@@ -274,6 +277,16 @@ git checkout -b feature/your-feature-name
 - `EADDRINUSE`: change `PORT` in `.env` or stop the process using that port.
 - Cannot connect to DB: verify `MONGODB_URI` and ensure MongoDB is running/reachable.
 - No email received: verify SMTP credentials and check spam; in dev mode inspect server logs.
+
+### Render Email Checklist
+
+- Add all SMTP vars in Render service environment (do not rely on local `.env`).
+- Set `NODE_ENV=production`.
+- Set `FRONTEND_URL` to your deployed frontend URL (not localhost) so reset links are valid.
+- Use provider-correct sender in `EMAIL_FROM` (many SMTP providers require this to match your authenticated domain/account).
+- For Gmail, use an App Password and either:
+  - `SMTP_SERVICE=gmail`, `SMTP_USER`, `SMTP_PASS`, `SMTP_SECURE=true`
+  - or `SMTP_HOST=smtp.gmail.com`, `SMTP_PORT=465`, `SMTP_SECURE=true`, `SMTP_USER`, `SMTP_PASS`
 
 ## License
 
