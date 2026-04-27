@@ -73,8 +73,7 @@ Kanban_Board/
 │   │   └── taskRoutes.js
 │   │
 │   ├── seed/
-│   │   ├── sampleData.js
-│   │   └── migrateAssignUser.js
+│   │   └── sampleData.js
 │   │
 │   ├── utils/
 │   │   ├── sendEmail.js
@@ -91,11 +90,13 @@ Kanban_Board/
 │   ├── signup.html
 │   ├── forgot-password.html
 │   ├── reset-password.html
-│   ├── script.js
-│   ├── auth.js
-│   ├── password-reset.js
-│   ├── styles.css
-│   └── auth.css
+│   ├── css/
+│   │   ├── auth.css
+│   │   └── styles.css
+│   └── js/
+│       ├── auth.js
+│       ├── password-reset.js
+│       └── script.js
 │
 ├── .gitignore
 └── README.md
@@ -242,24 +243,13 @@ Add screenshots in your repository (for example under `docs/screenshots/`) and u
 - Generic forgot-password responses to reduce user enumeration risk
 - Basic input validation on frontend and backend
 
-## Migration Strategy (Single-User to Multi-User)
+## Data Initialization
 
-### Option A: Fresh start
-Run seed to initialize a clean multi-user-compatible dataset:
+Use sample seed data to quickly start with a ready board setup:
 
 ```bash
 npm run seed
 ```
-
-### Option B: Assign legacy data to an owner
-
-```bash
-npm run migrate:assign-user
-```
-
-Optional migration env vars:
-- `MIGRATION_USER_EMAIL`
-- `MIGRATION_USER_PASSWORD`
 
 ## Future Improvements
 
