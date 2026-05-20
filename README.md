@@ -248,7 +248,7 @@ curl -X GET http://localhost:5050/api/boards \
 ### Main Application
 
 #### Kanban Board Home Page
-![Kanban Board Home](assets/screenShots/home\ page.png)
+![Kanban Board Home](assets/screenShots/homePage.png)
 
 ## Security Highlights
 
