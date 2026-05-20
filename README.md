@@ -223,16 +223,32 @@ curl -X GET http://localhost:5050/api/boards \
 
 ## Screenshots
 
-Add screenshots in your repository (for example under `docs/screenshots/`) and update links below.
+### Authentication Flow
 
-### Login Page
-![Login Page Placeholder](https://via.placeholder.com/1200x700?text=Login+Page)
+#### Signup Page
+![Signup Page](assets/screenShots/signup.png)
 
-### Board UI
-![Board UI Placeholder](https://via.placeholder.com/1200x700?text=Kanban+Board+UI)
+#### Login Page
+![Login Page](assets/screenShots/login.png)
 
-### Drag and Drop
-![Drag and Drop Placeholder](https://via.placeholder.com/1200x700?text=Drag+and+Drop)
+#### Forgot Password
+![Forgot Password](assets/screenShots/forgotPassword.png)
+
+#### Password Reset
+![Reset Password](assets/screenShots/resetPassword.png)
+
+### Email System
+
+#### Signup Confirmation Email
+![Signup Confirmation Email](assets/screenShots/signupMail.png)
+
+#### Password Reset Email
+![Password Reset Email](assets/screenShots/forgotMail.png)
+
+### Main Application
+
+#### Kanban Board Home Page
+![Kanban Board Home](assets/screenShots/home\ page.png)
 
 ## Security Highlights
 
